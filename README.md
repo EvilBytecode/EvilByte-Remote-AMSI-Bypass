@@ -19,10 +19,12 @@ AMSI-PeParse-Patch.exe 1234            # By PID (you can use in powershell $pid)
    - Locates amsi.dll in target process
 
 3. 🧠 **Memory Analysis**
-   - Reads PE headers via `ReadProcessMemory`
-   - Parses DOS → NT headers → Export Directory
-   - All parsing done directly in target's memory!
-
+   - Explicit individual `ReadProcessMemory()` calls:
+     1. Reads DOS header from module base address
+     2. Reads NT headers from base + e_lfanew offset
+     3. Stores RVAs of import/export directories
+   - Creates Pe structure with pointers to remote memory structures
+   
 4. 🔍 **Locate Function**
    - Reads export tables remotely
    - Searches for "AmsiScanBuffer" string
